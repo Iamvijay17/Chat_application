@@ -2,7 +2,7 @@
 const Auth = () => {
   return (
     <div>
-      Auth
+      Auth Test
     </div>
   )
 }
