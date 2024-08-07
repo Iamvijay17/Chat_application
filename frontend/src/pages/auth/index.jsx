@@ -15,7 +15,7 @@ const handleSignup =()=>{}
     <div className="flex items-center h-[100vh]">
     <div className="mx-auto flex shadow-xl rounded-3xl max-w-lg flex-col md:max-w-none md:flex-row md:pr-10">
     <div className="max-w-md rounded-3xl bg-gradient-to-t from-blue-700 via-blue-700 to-blue-600 px-4 py-10 text-white sm:px-10 md:m-6 md:mr-8">
-      <p className="mb-20 font-bold tracking-wider">Chat App</p>
+      <p className="mb-20 font-bold tracking-wider">Chat App test</p>
       <p className="mb-4 text-3xl font-bold md:text-4xl md:leading-snug">
         Start your <br />
         journey with us
