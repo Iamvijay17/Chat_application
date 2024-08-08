@@ -12,7 +12,7 @@ function App() {
     return isAuthenticated ? children : <Navigate to="/auth" />;
   };
 
-  const AuthRoute = ({children}) => {  
+  const AuthRoute = ({children}) => {
     const { userInfo } = useAppStore(); 
     const isAuthenticated = !!userInfo;
     return isAuthenticated ?  <Navigate to="/chat" /> : children;
