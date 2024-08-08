@@ -16,7 +16,7 @@ function App() {
     const { userInfo } = useAppStore(); 
     const isAuthenticated = !!userInfo;
     return isAuthenticated ?  <Navigate to="/chat" /> : children;
-  };
+  }
 
 
   return (

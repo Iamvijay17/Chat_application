@@ -1,11 +1,10 @@
 import path from 'path';
-import reactRefresh from '@vitejs/plugin-react-refresh';
-import eslint from 'vite-plugin-eslint';
+import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite';
 
 export default defineConfig({ 
  
-  plugins: [eslint(), reactRefresh()],
+ plugins: [react()],
  
   resolve: {
     alias: {
