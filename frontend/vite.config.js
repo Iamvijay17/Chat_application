@@ -1,13 +1,16 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import path from 'path';
+import reactRefresh from '@vitejs/plugin-react-refresh';
+import eslint from 'vite-plugin-eslint';
+import { defineConfig } from 'vite';
 
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig({ 
+ 
+  plugins: [eslint(), reactRefresh()],
+ 
   resolve: {
     alias: {
       // eslint-disable-next-line no-undef
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
-})
+});
