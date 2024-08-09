@@ -88,13 +88,14 @@ export const getUserInfo = async (request, response, next) => {
         if (!userData) {
             return response.status(404).send("User with the given id not found.")
         }
+        
         return response.status(200).json({
             id: userData.id,
             email: userData.email,
             firstName: userData.firstName,
             lastName: userData.lastName,
-            profileSetup: userData.profileSetup
-
+            profileSetup: userData.profileSetup,
+            image: userData.image
         });
 
     } catch (error) {
@@ -137,7 +138,6 @@ export const updateProfile = async (request, response, next) => {
 
 
 export const updateProfileImage = async (request, response, next) => {
-    console.log('response', response);
 
     try {
         if (!request.file) {
@@ -145,15 +145,15 @@ export const updateProfileImage = async (request, response, next) => {
         }
 
         const date = Date.now();
-        let fileName = "uploads/profiles" + date + request.file.originalname;
-        
+        let fileName = "uploads/profiles/" + date + request.file.originalname;
+console.log('request.file.path', request.file.path);
+
         renameSync(request.file.path, fileName);
 
         const updatedUser = await User.findByIdAndUpdate(
-            request.userId, 
-            { image: fileName }, 
+            request.userId,
+            { image: fileName },
             { new: true, runValidators: true })
-console.log('updatedUser.image', updatedUser);
 
         return response.status(200).json({
             image: updatedUser.image
@@ -171,27 +171,22 @@ console.log('updatedUser.image', updatedUser);
 export const removeProfileImage = async (request, response, next) => {
     try {
         const { userId } = request;
+        const user = await User.findById(userId)
         const { firstName, lastName } = request.body;
-        if (!firstName || !lastName) {
-            return response.status(400).send("First name and Last Name is required")
+
+        if (!user) {
+            return response.status(404).send("User not found.")
         }
 
+        if (user.image) {
+            unlinkSync(user.image)
+        }
+        user.image = null;
+        await user.save()
 
-        const userData = await User.findByIdAndUpdate(userId, {
-            firstName, lastName, profileSetup: true
-        }, { new: true })
 
 
-
-        return response.status(200).json({
-            id: userData.id,
-            email: userData.email,
-            firstName: userData.firstName,
-            password: userData.password,
-            lastName: userData.lastName,
-            profileSetup: userData.profileSetup
-
-        });
+        return response.status(200).send("Profile Image removed successfully");
 
     } catch (error) {
         console.log({ error })
