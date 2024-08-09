@@ -1,32 +1,34 @@
 import { apiClient } from '@/lib/api-client';
 import { useAppStore } from '@/store';
-import { UPDATE_PROFILE_IMAGE_ROUTE, UPDATE_PROFILE_ROUTE } from '@/utils/constant';
+import { REMOVE_PROFILE_IMAGE_ROUTE, UPDATE_PROFILE_IMAGE_ROUTE, UPDATE_PROFILE_ROUTE, HOST } from '@/utils/constant';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 
 const Profile = () => {
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
   const profileImageRef = useRef(null);
   const [profileData, setProfileData] = useState({
-    email: userInfo?.email,
+    email: userInfo?.email || '',
     image: '',
-    firstName: userInfo?.firstName ? userInfo?.firstName : '',
-    lastName: userInfo?.lastName ? userInfo?.lastName : '',
+    firstName: userInfo?.firstName || '',
+    lastName: userInfo?.lastName || '',
   });
-  const [imagePreview, setImagePreview] = useState(profileData.image || '');
 
-  useEffect(() => {    
+  useEffect(() => {
     if (userInfo) {
-      setProfileData((prevData) => ({
-        ...prevData,
-        email: userInfo?.email,
-        firstName: userInfo?.firstName ? userInfo?.firstName : '',
-        lastName: userInfo?.lastName ? userInfo?.lastName : '',
-      }));
+      setProfileData({
+        email: userInfo.email,
+        firstName: userInfo.firstName || '',
+        lastName: userInfo.lastName || '',
+        image: userInfo.image ? `${HOST}/${userInfo.image}` : '',
+      });
     }
-  }, [userInfo]);
+  }, [userInfo, profileData.image]);
 
   const validateProfile = () => {
     if (!profileData.firstName) {
@@ -43,12 +45,12 @@ const Profile = () => {
   const handleSave = async () => {
     if (validateProfile()) {
       try {
-        const response = await apiClient.post(UPDATE_PROFILE_ROUTE, profileData,  { withCredentials: true });
-        toast.success('Profile updated successfully');
-        if (profileImageRef.current.files[0]) {
-          setProfileData({image: profileImageRef.current.files[0]});
+        const response = await apiClient.post(UPDATE_PROFILE_ROUTE, profileData, { withCredentials: true });
+        if (profileImageRef.current?.files[0]) {
+          handleProfileImage({ target: { files: [profileImageRef.current.files[0]] } });
         }
-        if(response.status === 200){
+        if (response.status === 200) {
+          toast.success('Profile updated successfully');
           navigate('/chat');
         }
       } catch (error) {
@@ -64,42 +66,63 @@ const Profile = () => {
 
   const handleProfileImage = async (e) => {
     const file = e.target.files[0];
-    
+
     if (file) {
       const formData = new FormData();
       formData.append('profile_image', file);
-      const response = await apiClient.post(UPDATE_PROFILE_IMAGE_ROUTE, formData, { withCredentials: true });
-        
-      if (response.status === 200 && response.data.image) {
-        setProfileData({ ...profileData, image: response.data.image });
-        toast.success('Image Updated successfully');
+      try {
+        const response = await apiClient.post(UPDATE_PROFILE_IMAGE_ROUTE, formData, { withCredentials: true });
+        if (response.status === 200 && response.data.image) {
+          setProfileData((prevData) => ({ ...prevData, image: response.data.image }));
+          toast.success('Profile Image Updated successfully');
+        }
+      } catch (error) {
+        toast.error('Failed to update profile image');
       }
     }
   };
-  
 
- 
+  const handleRemoveProfileImage = async () => {
+    try {
+      const response = await apiClient.delete(REMOVE_PROFILE_IMAGE_ROUTE, { withCredentials: true });
+      if (response.status === 200) {
+        setProfileData((prevData) => ({ ...prevData, image: '' }));
+        toast.success('Profile Image Removed successfully');
+      }
+    } catch (error) {
+      toast.error('Failed to remove profile image');
+    }
+  };
+
 
   return (
     <div className="h-screen dark:bg-gray-700 bg-gray-200 pt-12">
       <div className="max-w-sm mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">
         <div className="border-b px-4 pb-6">
           <div className="text-center my-4">
-            <img
-              className="h-32 w-32 cursor-pointer rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4"
-              src={profileData.image || 'https://randomuser.me/api/portraits/women/21.jpg'}
-              alt=""
-              onClick={() => profileImageRef.current.click()}
-              
-            />
+            <Avatar className="h-32 w-32 cursor-pointer rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4" onClick={() => profileImageRef.current.click()}>
+              <AvatarImage  src={profileData.image} alt=""/>
+              <AvatarFallback>{profileData.firstName}</AvatarFallback>
+            </Avatar>
             <input
               type="file"
               ref={profileImageRef}
               style={{ display: 'none' }}
               onChange={handleProfileImage}
               accept="image/*"
-              name='profile_image'
+              name="profile_image"
             />
+            {profileData.image && (
+              <Badge 
+                variant="outline" 
+                className="cursor-pointer" 
+                onClick={handleRemoveProfileImage}
+              >
+    Remove
+              </Badge>
+            )}
+
+
             <div className="py-2">
               <h3 className="text-2xl text-gray-800 dark:text-white mb-1">
                 {`${profileData.firstName} ${profileData.lastName}`}
@@ -167,6 +190,7 @@ const Profile = () => {
 
           <div className="flex gap-2 px-2">
             <button
+              onClick={() => setProfileData({ ...profileData, firstName: '', lastName: '' })}
               className="flex-1 rounded-full border-2 border-gray-400 dark:border-gray-700 font-semibold text-black dark:text-white px-4 py-2"
             >
               Reset
