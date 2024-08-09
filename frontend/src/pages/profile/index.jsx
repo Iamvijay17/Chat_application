@@ -28,7 +28,7 @@ const Profile = () => {
         image: userInfo.image ? `${HOST}/${userInfo.image}` : '',
       });
     }
-  }, [userInfo, profileData.image]);
+  }, [userInfo, profileData.image, profileImageRef]);
 
   const validateProfile = () => {
     if (!profileData.firstName) {
@@ -74,6 +74,12 @@ const Profile = () => {
         const response = await apiClient.post(UPDATE_PROFILE_IMAGE_ROUTE, formData, { withCredentials: true });
         if (response.status === 200 && response.data.image) {
           setProfileData((prevData) => ({ ...prevData, image: response.data.image }));
+          useAppStore.setState((state) => ({
+            userInfo: {
+              ...state.userInfo,
+              image: response.data.image,
+            },
+          }));
           toast.success('Profile Image Updated successfully');
         }
       } catch (error) {
@@ -87,6 +93,12 @@ const Profile = () => {
       const response = await apiClient.delete(REMOVE_PROFILE_IMAGE_ROUTE, { withCredentials: true });
       if (response.status === 200) {
         setProfileData((prevData) => ({ ...prevData, image: '' }));
+        useAppStore.setState((state) => ({
+          userInfo: {
+            ...state.userInfo,
+            image: '',
+          },
+        }));
         toast.success('Profile Image Removed successfully');
       }
     } catch (error) {
@@ -228,35 +240,11 @@ const Profile = () => {
                 src="https://randomuser.me/api/portraits/men/32.jpg"
                 alt=""
               />
-              <img
-                className="border-2 border-white dark:border-gray-800 rounded-full h-10 w-10 -mr-2"
-                src="https://randomuser.me/api/portraits/women/31.jpg"
-                alt=""
-              />
-              <img
-                className="border-2 border-white dark:border-gray-800 rounded-full h-10 w-10 -mr-2"
-                src="https://randomuser.me/api/portraits/men/33.jpg"
-                alt=""
-              />
-              <img
-                className="border-2 border-white dark:border-gray-800 rounded-full h-10 w-10 -mr-2"
-                src="https://randomuser.me/api/portraits/women/32.jpg"
-                alt=""
-              />
-              <img
-                className="border-2 border-white dark:border-gray-800 rounded-full h-10 w-10 -mr-2"
-                src="https://randomuser.me/api/portraits/men/44.jpg"
-                alt=""
-              />
-              <img
-                className="border-2 border-white dark:border-gray-800 rounded-full h-10 w-10 -mr-2"
-                src="https://randomuser.me/api/portraits/women/42.jpg"
-                alt=""
-              />
+              {/* multipule img */}
               <span
                 className="flex items-center justify-center bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white font-semibold border-2 border-gray-200 dark:border-gray-700 rounded-full h-10 w-10"
               >
-                +999
+                +99
               </span>
             </div>
           </div>
