@@ -7,3 +7,4 @@ export const GET_USER_INFO = `${AUTH_ROUTES}/user`;
 export const UPDATE_PROFILE_ROUTE = `${AUTH_ROUTES}/update_profile`;
 export const UPDATE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/update_profile_image`;
 export const REMOVE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/remove_profile_image`;
+export const LOGOUT_ROUTES = `${AUTH_ROUTES}/logout`;
