@@ -13,12 +13,11 @@ const MessageContainer = ({getMessages}) => {
     }
   }, []);
 
- 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+      scrollRef.current.scrollIntoView();
     }
-  }, [selectedChatMessages]);
+  }, []);
 
 
 
