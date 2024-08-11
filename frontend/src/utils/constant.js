@@ -8,3 +8,12 @@ export const UPDATE_PROFILE_ROUTE = `${AUTH_ROUTES}/update_profile`;
 export const UPDATE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/update_profile_image`;
 export const REMOVE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/remove_profile_image`;
 export const LOGOUT_ROUTES = `${AUTH_ROUTES}/logout`;
+
+
+export const CONTACTS_ROUTES = 'api/v1/contacts';
+
+export const SEARCH_CONTACTS_ROUTES = `${CONTACTS_ROUTES}/search`;
+
+
+export const MESSAGES_ROUTES = 'api/v1/messages';
+export const GET_ALL_MESSAGES_ROUTES = `${MESSAGES_ROUTES}/get_messages`;
