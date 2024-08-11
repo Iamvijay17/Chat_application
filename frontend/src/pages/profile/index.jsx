@@ -112,9 +112,9 @@ const Profile = () => {
       <div className="max-w-sm mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">
         <div className="border-b px-4 pb-6">
           <div className="text-center my-4">
-            <Avatar className="h-32 w-32 cursor-pointer rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4" onClick={() => profileImageRef.current.click()}>
+            <Avatar className="text-gray-800 h-32 w-32 cursor-pointer rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4" onClick={() => profileImageRef.current.click()}>
               <AvatarImage  src={profileData.image} alt=""/>
-              <AvatarFallback>{profileData.firstName}</AvatarFallback>
+              <AvatarFallback>{profileData?.firstName?.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <input
               type="file"

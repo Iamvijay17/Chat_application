@@ -12,20 +12,20 @@ const ChatHeader = () => {
       <div className="flex gap-5 items-center w-full justify-between">
         <div className="flex gap-3 items-center justify-center">
           <div className="relative gap-3 items-center">
-            <Avatar className="h-10 w-10 cursor-pointer rounded-full border-2 border-white dark:border-gray-800">
-              <AvatarImage src={`${HOST}/${selectedChatData.image}`} alt=""/>
-              <AvatarFallback>{selectedChatData.firstName}</AvatarFallback>
+            <Avatar className="h-10 w-10 cursor-pointer rounded-full border-2 text-gray-800 border-white dark:border-gray-800">
+              <AvatarImage src={`${HOST}/${selectedChatData?.image}`} alt=""/>
+              <AvatarFallback>{selectedChatData?.firstName?.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>            
           </div>
           { selectedChatType === 'contact' &&
             <div className='flex flex-col'>
               <span>
                 {
-                  selectedChatData.firstName && selectedChatData.lastName ? `${ selectedChatData.firstName} ${ selectedChatData.lastName} ` : selectedChatData.email
+                  selectedChatData?.firstName && selectedChatData?.lastName ? `${ selectedChatData.firstName} ${ selectedChatData.lastName} ` : selectedChatData?.email
                 }
               </span>
               <span className='text-xs'>
-                {selectedChatData.email}
+                {selectedChatData?.email}
               </span>
             </div>
           }

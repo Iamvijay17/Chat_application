@@ -4,9 +4,9 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import AuthRoutes from './routes/AuthRoutes.js';
-import { SearchContact } from './routes/ContactRoutes.js'; 
+import SearchContact from './routes/ContactRoutes.js'; 
+import MessagesRoutes from './routes/MessagesRoutes.js'; 
 import setupSocket from './socket.js';
-import MessagesRoutes from './routes/MessagesRoutes.js';
 
 dotenv.config();
 

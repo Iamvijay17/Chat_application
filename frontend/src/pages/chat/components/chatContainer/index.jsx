@@ -18,7 +18,6 @@ const ChatContainer = () => {
       );
       
       if (JSON.stringify(response.data.messages) !== JSON.stringify(selectedChatMessages)) {
-        console.log('Updating messages');
         setSelectedChatMessages(response?.data?.messages);
       }
       

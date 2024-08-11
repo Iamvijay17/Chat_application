@@ -1,30 +1,11 @@
-import User from "../models/UserModel.js";
+import { Router } from "express";
+import { verifyToken } from "../middlewares/AuthMiddleware.js";
+import { GetContactFroDMList, SearchContact } from "../controllers/ContactControllers.js";
 
-export const SearchContact = async (request, response, next) => {
-    try {
-        const { search } = request.body;
-        if (search === undefined || search === null) {
-            
-            return response.status(200).send("SearchTerm is required");
-        }
 
-        const SearchTermRegex = search.replace(
-            /[ .* +?^${}()|[\]\\]/g,
-            "\\$&"
-        );
+const contactRoutes = Router();
 
-        const regex = new RegExp(SearchTermRegex, "i");
-        const contacts = await User.find({
-            $and: [{_id: {$ne:request.userId}},
-                {$or: [{firstName:regex}, {lastName:regex}, {email:regex}]}
-            ],
-        });
-        
-        return response.status(200).json({contacts});
-     
+contactRoutes.post("/search", verifyToken, SearchContact);
+contactRoutes.get("/get_contacts_dm", verifyToken, GetContactFroDMList);
 
-    } catch (error) {
-        console.log({ error })
-        return response.status(500).send("Internal Server Error")
-    }
-}
+export default contactRoutes;
