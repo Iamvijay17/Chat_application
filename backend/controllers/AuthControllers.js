@@ -113,12 +113,9 @@ export const updateProfile = async (request, response, next) => {
             return response.status(400).send("First name and Last Name is required")
         }
 
-
         const userData = await User.findByIdAndUpdate(userId, {
             firstName, lastName, profileSetup: true
         }, { new: true })
-
-
 
         return response.status(200).json({
             id: userData.id,
@@ -160,7 +157,6 @@ export const updateProfileImage = async (request, response, next) => {
         })
 
 
-
     } catch (error) {
         console.log({ error })
         return response.status(500).send("Internal Server Error")
@@ -184,8 +180,6 @@ export const removeProfileImage = async (request, response, next) => {
         user.image = null;
         await user.save()
 
-
-
         return response.status(200).send("Profile Image removed successfully");
 
     } catch (error) {
@@ -193,9 +187,10 @@ export const removeProfileImage = async (request, response, next) => {
         return response.status(500).send("Internal Server Error")
     }
 }
+
+
 export const Logout = async (request, response, next) => {
     try {
-
         response.cookie("jwt", "", { maxAge: 1, secure: true, sameSite: "None" })
 
         return response.status(200).send("Logout successfully");
