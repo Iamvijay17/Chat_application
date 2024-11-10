@@ -5,16 +5,18 @@ import { IoSend } from 'react-icons/io5';
 import EmojiPicker from 'emoji-picker-react';
 import { useAppStore } from '@/store';
 import { useSocket } from '@/context/SocketContext';
+import { apiClient } from '@/lib/api-client';
+import { UPLOAD_FILE_ROUTES } from '@/utils/constant';
 
 const MessageBar = ({ getMessages }) => {
   const emojiRef = useRef(null);
   const inputRef = useRef(null);
+  const fileInputRef = useRef();
   const socket = useSocket();
   const { selectedChatType, selectedChatData, userInfo } = useAppStore();
   const [message, setMessage] = useState('');
   const [emojiPicker, setEmojiPicker] = useState(false);
 
-  // Handle click outside to close the emoji picker
   useEffect(() => {
     function handleClickOutside(e) {
       if (emojiRef.current && !emojiRef.current.contains(e.target)) {
@@ -27,12 +29,10 @@ const MessageBar = ({ getMessages }) => {
     };
   }, []);
 
-  // Focus input field when component mounts or after sending a message
   useEffect(() => {
     inputRef.current?.focus();
   }, [message]);
 
-  // Handle Enter key to send the message
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -40,14 +40,12 @@ const MessageBar = ({ getMessages }) => {
     }
   };
 
-  // Handle emoji click
   const handleEmoji = (e) => {
     setMessage((msg) => msg + e.emoji);
   };
 
-  // Handle sending the message
   const handleMessageSend = () => {
-    if (message.trim() === '') return; // Prevent sending empty messages
+    if (message.trim() === '') return; 
 
     if (selectedChatType === 'contact') {
       socket.emit('sendMessage', {
@@ -59,8 +57,42 @@ const MessageBar = ({ getMessages }) => {
       });
       getMessages();
       setMessage('');
-      // Refocus the input field
       inputRef.current?.focus();
+    }
+  };
+
+  const handleAttachmentClick = (e) => {
+    if(fileInputRef.current){
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleAttachmentChange = async(e) => {
+    try {
+      
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await apiClient.post(UPLOAD_FILE_ROUTES, formData, {
+        withCredentials: true,
+      });
+      
+      if (response.status === 200 && response.data) {
+        if (selectedChatType === 'contact') {
+
+          socket.emit('sendMessage', {
+            sender: userInfo.id,
+            content: undefined,
+            recipient: selectedChatData._id,
+            messageType: 'file',
+            fileUrl: response.data.filePath,
+          });
+        }
+      }
+
+
+    } catch (error) {
+      
     }
   };
 
@@ -74,13 +106,14 @@ const MessageBar = ({ getMessages }) => {
           placeholder="Enter Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown} // Handle keydown on the input field itself
+          onKeyDown={handleKeyDown} lf
         />
 
-        <button className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all">
+        <button className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+          onClick={handleAttachmentClick}>
           <GrAttachment className="text-2xl" />
         </button>
-
+        <input type='file' className='hidden' ref={fileInputRef} onChange={handleAttachmentChange}/>
         <div className="relative">
           <button
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
