@@ -5,7 +5,7 @@ import multer from "multer";
 
 const AuthRoutes = Router();
 
-const upload = multer({dest:"uploads/profiles/"})
+const upload = multer({dest:"/uploads/profiles"})
 
 AuthRoutes.post("/signup", signup)
 AuthRoutes.post("/login", login)

@@ -30,9 +30,9 @@ const ProfileInfo = () => {
   return (
     <div className=" absolute bottom-0 h-16 flex items-center justify-between px-10 w-full bg-[#212b33]">
       <div className="flex gap-3 items-center">
-        <Avatar className="h-10 w-10 cursor-pointer rounded-full border-2 border-white dark:border-gray-800 mx-auto my-4">
+        <Avatar className=" text-gray-800 h-10 w-10 cursor-pointer rounded-full border-2 border-white dark:border-gray-800 mx-auto my-4">
           <AvatarImage  src={`${HOST}/${userInfo.image}`} alt=""/>
-          <AvatarFallback>{userInfo.firstName}</AvatarFallback>
+          <AvatarFallback>{userInfo?.firstName?.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
       </div>
       <div className=''>

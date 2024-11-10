@@ -86,9 +86,9 @@ const NewDm = () => {
                   searchContact.map(contact=><div key={contact._id} className='flex gap-3 items-center cursor-pointer' onClick={()=>handleNewContact(contact)}>
                     <div className="mt-3 h-16 flex items-center gap-5 px-5 w-full bg-[#212b33]">
                       <div className="relative gap-3 items-center">
-                        <Avatar className="h-10 w-10 cursor-pointer rounded-full border-2 border-white dark:border-gray-800">
+                        <Avatar className="text-gray-800 h-10 w-10 cursor-pointer rounded-full border-2 border-white dark:border-gray-800">
                           <AvatarImage src={`${HOST}/${contact.image}`} alt=""/>
-                          <AvatarFallback>{contact.firstName}</AvatarFallback>
+                          <AvatarFallback>{contact?.firstName?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                       </div>
                       <div className='flex flex-col'>
